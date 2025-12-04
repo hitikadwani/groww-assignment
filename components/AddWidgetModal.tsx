@@ -81,12 +81,15 @@ export default function AddWidgetModal({ onClose, onAdd }: AddWidgetModalProps) 
         return
       }
 
-      const selectedFields = fieldSource.slice(0, 5).map((field) => ({
-        key: field.key,
-        label: field.label,
-        type: field.type === 'number' ? 'number' : 'string',
-        path: field.path,
-      }))
+      const selectedFields = fieldSource.slice(0, 5).map((field) => {
+        const valueType = field.type === 'number' ? 'number' : 'string'
+        return {
+          key: field.key,
+          label: field.label,
+          type: valueType as 'number' | 'string',
+          path: field.path,
+        }
+      })
 
       const widget: Widget = {
         id: `widget-${Date.now()}`,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Widget } from '@/types'
+import { Widget, FieldOption } from '@/types'
 import { fetchApiData } from '@/utils/api'
 import { exploreFields } from '@/utils/fieldExplorer'
 import FieldSelector from './FieldSelector'
@@ -20,7 +20,15 @@ export default function WidgetConfigPanel({
   const [name, setName] = useState(widget.name)
   const [apiUrl, setApiUrl] = useState(widget.apiUrl)
   const [refreshInterval, setRefreshInterval] = useState(widget.refreshInterval)
-  const [selectedFields, setSelectedFields] = useState(widget.fields)
+  const [selectedFields, setSelectedFields] = useState<FieldOption[]>(
+    widget.fields.map((field) => ({
+      key: field.key,
+      label: field.label,
+      type: field.type ?? 'string',
+      path: field.path,
+      value: null,
+    }))
+  )
   const [apiData, setApiData] = useState<any>(null)
   const [isLoadingData, setIsLoadingData] = useState(false)
 
@@ -42,7 +50,12 @@ export default function WidgetConfigPanel({
       name,
       apiUrl,
       refreshInterval,
-      fields: selectedFields,
+      fields: selectedFields.map((field) => ({
+        key: field.key,
+        label: field.label,
+        type: field.type === 'number' ? 'number' : 'string',
+        path: field.path,
+      })),
     }
     onUpdate(updatedWidget)
   }
